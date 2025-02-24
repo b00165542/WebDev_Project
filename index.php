@@ -8,15 +8,16 @@
 </head>
 <body>
   <header>
-    <h1>Welcome to Sports Ticketing</h1>
+      <h1><?php echo "Home Page"; ?></h1>
     <nav>
-      <a href="index.html">Home</a>
-      <a href="product.html">Event Details</a>
-      <a href="search.html">Search Events</a>
+        <a href="index.php">Home</a>
+        <a href="product.php">Search For Ticket</a>
+        <a href="contact.php">Contact Page</a>
+        <a href="login.php">Login Page</a>
     </nav>
   </header>
   <div class="container">
-    <h2>Upcoming Sports Events</h2>
+      <h2><?php echo "Upcoming Sports Events"; ?></h2>
     <p>Discover and register for casual sports events happening near you!</p>
   </div>
   <footer>
