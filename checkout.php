@@ -1,89 +1,76 @@
+<?php global $conn; include "Layout/Header.php" ?>
+<?php include "connect/DBconnect.php"?>
 <?php
-// Database configuration
-$host = 'localhost';
-$username = 'root';
-$password = 'root';
-$dbname = 'Tickets_db';
 
-// Create a connection to the database
-$conn = new mysqli($host, $username, $password, $dbname);
+// Query to get event details along with ticket prices
+$sql = "SELECT e.eventName, e.eventLocation, e.eventDate, e.eventStartTime, e.eventFinishTime, e.eventPrice, t.eventPrice AS ticketPrice
+        FROM Events e
+        JOIN Tickets t ON e.idEvents = t.Events_idEvents";
 
-// Check if the connection is successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
+// Execute the query
+$result = $conn->query($sql);
+
+// Check if the query returned any results
+if ($result->num_rows > 0) {
+    // Fetch and display each event
+    $row = $result->fetch_assoc();
+    $eventName = $row['eventName'];
+    $eventLocation = $row['eventLocation'];
+    $eventDate = $row['eventDate'];
+    $eventPrice = $row['eventPrice'];
+    $ticketPrice = $row['ticketPrice'];
+} else {
+    // If no events found, handle the error
+    echo "No events found.";
+    $eventName = $eventLocation = $eventDate = $eventPrice = $ticketPrice = null;
 }
 
-// Check if the form was submitted
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Capture form input values
-    $fullName = $_POST['fullName'];
-    $email = $_POST['email'];
-    $phone = $_POST['phone'];
-    $address = $_POST['address'];
-
-    // Get the user ID based on the email (assuming email is unique)
-    $sql = "SELECT idUsers FROM Users WHERE userEmail = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        $user = $result->fetch_assoc();
-        $userId = $user['idUsers'];
-
-        // Get the ticket ID (you might get this from session or URL)
-        $ticketId = 1; // Assuming you're using a specific ticket for the checkout. Replace this with logic to get the ticket ID.
-
-        // Get the ticket price from the Tickets table
-        $ticketSql = "SELECT eventPrice FROM Tickets WHERE idTickets = ?";
-        $ticketStmt = $conn->prepare($ticketSql);
-        $ticketStmt->bind_param("i", $ticketId);
-        $ticketStmt->execute();
-        $ticketResult = $ticketStmt->get_result();
-        $ticket = $ticketResult->fetch_assoc();
-        $totalAmount = $ticket['eventPrice']; // This can be adjusted based on quantity or other factors
-
-        // Insert the order into the Orders table
-        $orderSql = "INSERT INTO Orders (Users_idUsers, Tickets_idTickets, totalAmount) VALUES (?, ?, ?)";
-        $orderStmt = $conn->prepare($orderSql);
-        $orderStmt->bind_param("iis", $userId, $ticketId, $totalAmount);
-
-        if ($orderStmt->execute()) {
-            echo "Order confirmed! Your total is $" . number_format($totalAmount, 2);
-        } else {
-            echo "Error: " . $orderStmt->error;
-        }
-    } else {
-        echo "User not found. Please register first.";
-    }
-}
-
+// Close the database connection
 $conn->close();
 ?>
 
 <?php include "Layout/Header.php" ?>
 
-<form action = "POST">
-    <h2> Checkout</h2>
-    <div class="input-field">
-        <input type="" placeholder="Enter your Full Name" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="email" placeholder="Enter your Email Address" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="tel" placeholder="Enter your Phone Number" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="text" placeholder="Enter your Address" required/>
-    </div>
-    <br>
-    <input class="Login_button" type="submit" value="Confirm">
-    <br>
-</form>
+<div class="order-page">
+    <h2>Checkout - Order Summary</h2>
+    <?php if ($eventName !== null): ?>
+        <div class="order-summary">
+            <h3>Event Details</h3>
+            <p><strong>Event:</strong> <?php echo htmlspecialchars($eventName); ?></p>
+            <p><strong>Location:</strong> <?php echo htmlspecialchars($eventLocation); ?></p>
+            <p><strong>Date:</strong> <?php echo htmlspecialchars($eventDate); ?></p>
+            <p><strong>Price:</strong> $<?php echo number_format($eventPrice, 2); ?></p>
+            <p><strong>Ticket Price:</strong> $<?php echo number_format($ticketPrice, 2); ?></p>
+        </div>
+    <?php else: ?>
+        <p>No event data available.</p>
+    <?php endif; ?>
+
+        <h3>Billing Information</h3>
+        <div class="input-field">
+            <label for="fullName">Full Name:</label>
+            <input type="text" name="fullName" id="fullName" placeholder="Enter your Full Name" required />
+        </div>
+
+        <div class="input-field">
+            <label for="email">Email Address:</label>
+            <input type="email" name="email" id="email" placeholder="Enter your Email Address" required />
+        </div>
+
+        <div class="input-field">
+            <label for="phone">Phone Number:</label>
+            <input type="tel" name="phone" id="phone" placeholder="Enter your Phone Number" required />
+        </div>
+
+        <div class="input-field">
+            <label for="address">Shipping Address:</label>
+            <input type="text" name="address" id="address" placeholder="Enter your Address" required />
+        </div>
+
+        <input class="Login_button" type="submit" value="Confirm Order">
+</div>
 
 <?php include "Layout/Footer.php" ?>
+
+
+

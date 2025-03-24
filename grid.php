@@ -1,17 +1,6 @@
+<?php global $conn; include "Layout/Header.php" ?>
+<?php include "connect/DBconnect.php"?>
 <?php
-// Database configuration
-$host = 'localhost';
-$username = 'root';
-$password = 'root';
-$dbname = 'Tickets_db';
-
-// Create a connection to the database
-$conn = new mysqli($host, $username, $password, $dbname);
-
-// Check if the connection is successful
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
 
 // Query to get all tickets (assuming tickets are related to events)
 $sql = "SELECT t.idTickets, t.eventPrice, e.eventName, e.eventLocation, e.eventDate FROM Tickets t JOIN Events e ON t.Events_idEvents = e.idEvents";

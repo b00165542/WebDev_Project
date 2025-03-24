@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="CSS/form.css">
     <link rel="stylesheet" href="CSS/grid.css">
     <link rel="stylesheet" href="CSS/search.css">
+    <link rel="stylesheet" href="CSS/checkout.css">
     <link rel="stylesheet" href="CSS/footer.css">
 
 
