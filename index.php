@@ -1,31 +1,45 @@
-<?php global $conn; include "Layout/Header.php" ?>
-<?php include "connect/DBconnect.php"?>
+<?php include "Layout/Header.php" ?>
+
 <?php
-// Query to get upcoming events
-$sql = "SELECT eventName, eventLocation, eventDate FROM Events WHERE eventDate >= CURDATE() ORDER BY eventDate LIMIT 5";
-$result = $conn->query($sql);
+// Include the Database class for PDO connection
+require_once 'Classes/dbConnection.php';
+use Classes\dbConnection;
 
-echo "<h1>Home Page</h1>";
-echo "<div class='container'>
-        <h2>Upcoming Sports Events</h2>
-        <p>Discover and register for casual sports events happening near you!</p>
-        <div class='events-list'>";
+try {
+    // Get the PDO connection
+    $conn = dbConnection::getConnection();
 
-if ($result->num_rows > 0) {
-    while ($row = $result->fetch_assoc()) {
-        echo "<div class='event'>
-                <h3>" . $row['eventName'] . "</h3>
-                <p>" . $row['eventLocation'] . "</p>
-                <p>" . $row['eventDate'] . "</p>
-              </div>";
+    // Query to get upcoming events
+    $sql = "SELECT eventName, eventLocation, eventDate FROM Events WHERE eventDate >= CURDATE() ORDER BY eventDate LIMIT 5";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+
+    echo "<h1>Home Page</h1>";
+    echo "<div class='container'>
+            <h2>Upcoming Sports Events</h2>
+            <p>Discover and register for casual sports events happening near you!</p>
+            <div class='events-list'>";
+
+    if ($stmt->rowCount() > 0) {
+        // Loop through the results and display each event
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            echo "<div class='event'>
+                    <h3>" . htmlspecialchars($row['eventName']) . "</h3>
+                    <p>" . htmlspecialchars($row['eventLocation']) . "</p>
+                    <p>" . htmlspecialchars($row['eventDate']) . "</p>
+                  </div>";
+        }
+    } else {
+        echo "No upcoming events found.";
     }
-} else {
-    echo "No upcoming events found.";
+
+    echo "</div></div>";
+
+} catch (PDOException $e) {
+    // Catch any errors with the database connection
+    echo "Error: " . $e->getMessage();
 }
 
-echo "</div></div>";
-
-$conn->close();
 ?>
 
 <?php include "Layout/Footer.php" ?>

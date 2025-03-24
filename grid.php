@@ -1,23 +1,30 @@
-<?php global $conn; include "Layout/Header.php" ?>
-<?php include "connect/DBconnect.php"?>
-<?php
+<?php include "Classes/dbConnection.php"; ?>
 
-// Query to get all tickets (assuming tickets are related to events)
-$sql = "SELECT t.idTickets, t.eventPrice, e.eventName, e.eventLocation, e.eventDate FROM Tickets t JOIN Events e ON t.Events_idEvents = e.idEvents";
-$result = $conn->query($sql);
+<?php
+// Get the connection using the dbConnection class
+$conn = Classes\dbConnection::getConnection();
+
+// Query to get all tickets (with event details)
+$sql = "SELECT t.ticketID, t.ticketPrice, e.eventName, e.eventLocation, e.eventDate 
+        FROM Tickets t 
+        JOIN Events e ON t.eventID = e.id";
+
+$stmt = $conn->prepare($sql);
+$stmt->execute();
+$result = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Check if there are any tickets
-if ($result->num_rows > 0) {
+if (count($result) > 0) {
     // Start the product grid layout
     echo "<div class='product-grid'>";
 
     // Fetch each ticket and display it
-    while ($row = $result->fetch_assoc()) {
+    foreach ($result as $row) {
         echo "<div class='product'>
-                <h3 class='product-name'>" . $row['eventName'] . "</h3>
-                <p class='product-location'>" . $row['eventLocation'] . "</p>
-                <p class='product-date'>" . $row['eventDate'] . "</p>
-                <p class='product-price'>$" . number_format($row['eventPrice'], 2) . "</p>
+                <h3 class='product-name'>" . htmlspecialchars($row['eventName']) . "</h3>
+                <p class='product-location'>" . htmlspecialchars($row['eventLocation']) . "</p>
+                <p class='product-date'>" . htmlspecialchars($row['eventDate']) . "</p>
+                <p class='product-price'>$" . number_format($row['ticketPrice'], 2) . "</p>
                 <a href='#' class='buy-button'>Buy Now</a>
               </div>";
     }
@@ -25,9 +32,10 @@ if ($result->num_rows > 0) {
     // Close the product grid layout
     echo "</div>";
 } else {
-    echo "No products found.";
+    echo "No tickets found.";
 }
 
-$conn->close();
+$conn = null; // Close the connection
 ?>
 
+<?php include "Layout/Footer.php"; ?>

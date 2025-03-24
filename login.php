@@ -1,53 +1,51 @@
-<?php global $conn; include "Layout/Header.php" ?>
-<?php include "connect/DBconnect.php"?>
 <?php
+// Include the dbConnection class
+include 'Classes/dbConnection.php'; // Ensure correct path
+
+// Get the connection
+$conn = Classes\dbConnection::getConnection();
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form data
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    // Check if the user exists with the entered credentials
-    $sql = "SELECT * FROM Users WHERE userEmail = ?";
-    $stmt = $conn->prepare($sql);
-    $stmt->bind_param("s", $email); // Bind email to the query
-    $stmt->execute();
-    $result = $stmt->get_result();
+    try {
+        // Query to get the user by email
+        $sql = "SELECT * FROM Users WHERE userEmail = :email";
+        $stmt = $conn->prepare($sql);
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
 
-    if ($result->num_rows > 0) {
-        // Fetch user data
-        $user = $result->fetch_assoc();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Verify the password
-        if (password_verify($password, $user['userPassword'])) {
-            // Successful login
-            echo "Login successful!";
+        // Check if the user exists and verify the password
+        if ($user && password_verify($password, $user['userPassword'])) {
+            // Start session and store user data
+            session_start();
+            $_SESSION['userID'] = $user['userID'];
+            $_SESSION['userName'] = $user['userName'];
+            $_SESSION['userEmail'] = $user['userEmail'];
+
+            // Redirect to the homepage or dashboard
+            header("Location: index.php");
+            exit();
         } else {
-            echo "Invalid password!";
+            echo "Invalid credentials.";
         }
-    } else {
-        echo "No user found with that email address!";
+    } catch (PDOException $e) {
+        echo "Error: " . $e->getMessage();
     }
 }
-
-$conn->close();
 ?>
 
-<?php include "Layout/Header.php" ?>
+<?php include "Layout/Header.php"; ?>
 
 <form action="login.php" method="POST">
-    <h2> Login </h2>
-    <div class="input-field">
-        <input type="email" name="email" placeholder="Enter your Email Address" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="password" name="password" placeholder="Enter your Password" required />
-    </div>
-    <br>
+    <h2>Login</h2>
+    <input type="email" name="email" placeholder="Enter your Email Address" required />
+    <input type="password" name="password" placeholder="Enter your Password" required />
     <input class="Login_button" type="submit" value="Login">
-    <br>
-    <p> Don't have an account? <span><a href="register.php">Sign up</a></span></p>
+    <p>Don't have an account? <a href="register.php">Sign up</a></p>
 </form>
 
-<?php include "Layout/Footer.php" ?>
-
+<?php include "Layout/Footer.php"; ?>

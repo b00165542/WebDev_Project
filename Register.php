@@ -1,75 +1,56 @@
-<?php global $conn; include "Layout/Header.php" ?>
-<?php include "connect/DBconnect.php"?>
 <?php
+// Include the dbConnection class
+include 'Classes/dbConnection.php'; // Ensure correct path
+
+// Get the connection
+$conn = Classes\dbConnection::getConnection();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    // Get form data from POST request
     $name = $_POST['name'];
     $email = $_POST['email'];
-    $phone = $_POST['phone'];
     $username = $_POST['username'];
     $password = $_POST['password'];
-    $confirmPassword = $_POST['confirm_password']; // For confirming password match
-    $role = 'user'; // Default role for a user
+    $confirmPassword = $_POST['confirmPassword'];
 
-    // Check if password and confirm password match
+    // Basic validation
     if ($password !== $confirmPassword) {
         echo "Passwords do not match!";
     } else {
-        // Hash the password before storing it in the database for security
+        // Hash the password
         $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-        // Insert user data into the Users table
-        $sql = "INSERT INTO Users (userName, userPassword, userEmail, userRol, userAge) 
-                VALUES (?, ?, ?, ?, ?)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bind_param("sssss", $username, $hashedPassword, $email, $role, $phone);
+        try {
+            // Insert user data into the Users table
+            $sql = "INSERT INTO Users (userName, userPassword, userEmail) VALUES (:userName, :userPassword, :userEmail)";
+            $stmt = $conn->prepare($sql);
+            $stmt->bindParam(':userName', $username);
+            $stmt->bindParam(':userPassword', $hashedPassword);
+            $stmt->bindParam(':userEmail', $email);
 
-        if ($stmt->execute()) {
-            echo "Registration successful!";
-        } else {
-            echo "Error: " . $stmt->error;
+            if ($stmt->execute()) {
+                header("Location: login.php"); // Redirect to login
+                exit();
+            } else {
+                echo "Error: " . $stmt->errorInfo()[2];
+            }
+        } catch (PDOException $e) {
+            echo "Error: " . $e->getMessage();
         }
     }
 }
-
-$conn->close();
 ?>
-
 
 <?php include "Layout/Header.php"; ?>
 
-
-<form method="POST">
-    <h2> Sign Up</h2>
-    <div class="input-field">
-        <input type="text" name="name" placeholder="Enter your Full Name" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="email" name="email" placeholder="Enter your Email Address" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="tel" name="phone" placeholder="Enter your Phone Number" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="text" name="username" placeholder="Enter your Username" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="password" name="password" placeholder="Enter your Password" required />
-    </div>
-    <br>
-    <div class="input-field">
-        <input type="password" name="confirm_password" placeholder="Re-Enter Password" required />
-    </div>
-    <br>
+<form action="register.php" method="POST">
+    <h2>Sign Up</h2>
+    <input type="text" name="name" placeholder="Full Name" required />
+    <input type="email" name="email" placeholder="Email" required />
+    <input type="text" name="username" placeholder="Username" required />
+    <input type="password" name="password" placeholder="Password" required />
+    <input type="password" name="confirmPassword" placeholder="Re-enter Password" required />
     <input class="Login_button" type="submit" value="Sign Up">
-    <br>
-    <p> Have an account? <span><a href="Login.php">Login</a></span></p>
+    <p>Have an account? <a href="login.php">Login</a></p>
 </form>
 
 <?php include "Layout/Footer.php"; ?>
-
