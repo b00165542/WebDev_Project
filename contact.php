@@ -1,5 +1,4 @@
 <?php
-// When the form is submitted (GET method), send the email and show feedback.
 echo isset($_GET['name']) ? ( mail("your-email@example.com", "Contact Form", "Name: " . $_GET['name'] . "\nEmail: " . $_GET['email'] . "\nMessage: " . $_GET['message']) ? "Message sent!" : "Error sending message" ) : "";
 ?>
 <?php include "Layout/Header.php" ?>

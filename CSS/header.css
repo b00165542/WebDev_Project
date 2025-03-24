@@ -5,8 +5,106 @@ header{
     text-align: center;
 }
 
-nav a{
-    margin: 0 15px;
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 30px;
+    background-color: #333;
+    border-bottom: 2px solid #FAF9F6;
+    position: relative;
+}
+
+.logo a {
+    color: #ffffff;
+    text-decoration: none;
+    font-size: 26px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.nav-links {
+    display: flex;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    flex-grow: 1;
+    justify-content: center;
+}
+
+.nav-links li {
+    margin: 0 20px;
+}
+
+.nav-links a {
     color: #FAF9F6;
     text-decoration: none;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.nav-links a:hover {
+    color: #FFCCEE;
+}
+
+.account-cart {
+    display: flex;
+    align-items: center;
+}
+
+.account-cart a {
+    color: #FAF9F6;
+    text-decoration: none;
+    margin-left: 15px;
+    font-size: 18px;
+}
+
+.account-cart a:hover {
+    color: #FAF9F6;
+}
+
+.account-icon i, .cart-icon i {
+    font-size: 20px;
+}
+
+.account-cart a:hover i {
+    color: #FFCCEE;
+}
+
+/* Hamburger Menu (Hidden by default) */
+.hamburger {
+    display: none;
+    cursor: pointer;
+}
+
+.hamburger i {
+    font-size: 30px;
+    color: #FAF9F6;
+}
+
+/* Mobile Styles (Media Query) */
+@media (max-width: 768px) {
+    .nav-links {
+        display: none;
+        width: 100%;
+        flex-direction: column;
+        text-align: center;
+        position: absolute;
+        top: 60px;
+        left: 0;
+        background-color: #333333;
+        border-top: 2px solid #333333;
+    }
+
+    .nav-links li {
+        margin: 15px 0;
+    }
+
+    .hamburger {
+        display: block;
+    }
+
+    .nav-links.active {
+        display: flex;
+    }
 }
