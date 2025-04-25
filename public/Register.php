@@ -6,7 +6,7 @@ require_once '../Classes/dbConnection.php';
 require_once '../Classes/session.php';
 
 // Initialize variables
-$name = $email = '';
+$registerName = $registerEmail = '';
 $success_message = '';
 
 // Check if user is already logged in
@@ -18,11 +18,11 @@ if (isset($_SESSION['userID'])) {
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
-    $name = $_POST['name'];
-    $email = $_POST['email'];
+    $registerName = $_POST['name'];
+    $registerEmail = $_POST['email'];
     $password = $_POST['password'];
 
-    $user = new Customer(null, $email, 0, $password, $name);
+    $user = new Customer(null, $registerEmail, $password, $registerName, 0);
     if ($user->save()) {
         $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
     }
@@ -44,13 +44,13 @@ include "../Layout/Header.php";
             
             <div class="form-group">
                 <label for="name">Full Name <span class="highlight">*</span></label>
-                <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" value="<?php echo htmlspecialchars($name); ?>" required minlength="2">
+                <input type="text" id="name" name="name" class="form-control" placeholder="Enter your full name" value="<?php echo htmlspecialchars($registerName); ?>" required minlength="2" autocomplete="off">
                 <div class="invalid-feedback"></div>
             </div>
             
             <div class="form-group">
                 <label for="email">Email Address <span class="highlight">*</span></label>
-                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" value="<?php echo htmlspecialchars($email); ?>" required minlength="8">
+                <input type="email" id="email" name="email" class="form-control" placeholder="Enter your email address" value="<?php echo htmlspecialchars($registerEmail); ?>" required minlength="8">
                 <div class="invalid-feedback"></div>
                 <small class="form-text">We'll never share your email with anyone else</small>
             </div>

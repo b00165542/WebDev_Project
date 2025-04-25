@@ -26,14 +26,12 @@ if ($conn){
     $stmt = $conn->query("SELECT * FROM orders WHERE userID = $userID ORDER BY orderDate DESC");
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    $refunds = (new Refund($conn))->getUserRefunds($userID);
+    $refunds = (new Refund())->getUserRefunds($userID);
 }
-
-$user = new User($conn, $userID);
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id']) && isset($_POST['refund_request'])){
     $orderID = (int)$_POST['refund_order_id'];
-    $refund = new Refund($conn);
+    $refund = new Refund();
     $result = $refund->processRefund($userID, $orderID);
     if (!empty($result['message'])) {
         $message = urlencode($result['message']);
@@ -57,7 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id']) &&
   <li><a href="profile.php?section=profile">Personal Info</a></li>
   <li><a href="profile.php?section=orders">Purchase History</a></li>
   <li><a href="profile.php?section=refunds">Refunds</a></li>
-  <?php if ($isAdmin) { ?><li><a href="profile.php?section=admin">Admin</a></li><?php } ?>
+  <?php if ($isAdmin) { ?><li><a href="admin_events.php">Admin</a></li><?php } ?>
 </ul>
 
 <?php

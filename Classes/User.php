@@ -7,10 +7,10 @@ class User{
 
     protected $userEmail;
     protected $userPassword;
-    protected int $isAdmin = 0;
+    protected  $isAdmin;
     protected $name;
 
-    public function __construct($userID, $userEmail, $isAdmin, $userPassword, $name){
+    public function __construct($userID, $userEmail, $userPassword, $name, $isAdmin = 0){
         $this->userID = $userID;
         $this->userEmail = $userEmail;
         $this->isAdmin = $isAdmin;
@@ -48,17 +48,17 @@ class User{
             return new Admin(
                 $data['userID'],
                 $data['userEmail'],
-                $data['isAdmin'],
                 $data['userPassword'],
-                $data['name']
+                $data['name'],
+                $data['isAdmin']
             );
         } else {
             return new Customer(
                 $data['userID'],
                 $data['userEmail'],
-                $data['isAdmin'],
                 $data['userPassword'],
-                $data['name']
+                $data['name'],
+                $data['isAdmin']
             );
         }
     }

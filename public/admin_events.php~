@@ -1,5 +1,7 @@
 <?php
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 require_once '../Classes/session.php';
 session::requireLogin();
 require_once '../Classes/dbConnection.php';
@@ -20,7 +22,7 @@ $admin = new Admin($_SESSION['userID'], $_SESSION['userEmail'], '', $_SESSION['n
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         if (isset($_POST['save_event'])) {
-            $eventId = isset($_POST['event_id']) ? $_POST['event_id'] : null;
+            $eventId = $_POST['event_id'];
             $eventName = $_POST['event_name'];
             $eventLocation = $_POST['event_location'];
             $eventPrice = $_POST['event_price'];
@@ -42,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if (isset($_POST['delete_event'])) {
-            $eventId = isset($_POST['event_id']) ? $_POST['event_id'] : null;
+            $eventId = $_POST['event_id'];
             if ($eventId && $admin->deleteEvent($eventId)) {
                 $success_message = "Event deleted successfully!";
             } else {
@@ -50,7 +52,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
         if (isset($_POST['edit_event'])) {
-            $eventId = isset($_POST['event_id']) ? $_POST['event_id'] : null;
+            $eventId = $_POST['event_id'];
             if ($eventId) {
                 $event_to_edit = Event::findById($eventId);
             }

@@ -18,7 +18,7 @@ class Order{
         try{
             $orderDate = date('Y-m-d');
             $total = $eventDetails['eventPrice'] * $quantity;
-            // Insert order directly using eventID (no tickets table)
+            // Insert order
             $conn->query("INSERT INTO orders (userID, eventID, totalAmount, orderDate, quantity) VALUES (" . $userId . ", " . $eventDetails['id'] . ", " . $total . ", '" . $orderDate . "', " . $quantity . ")");
             return [
                 'success'        => true,

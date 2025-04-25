@@ -1,10 +1,6 @@
 <?php
 require_once '../Classes/dbConnection.php';
 class Refund{
-    private $conn;
-    public function __construct($connection){
-        $this->conn = $connection;
-    }
     
     /**
      * Process a refund by marking the order as refunded and adding a refund entry
@@ -14,36 +10,26 @@ class Refund{
      * @return array Result with success status and message
      */
     public function processRefund($userID, $orderID){
-        try{
-            // Validate order belongs to user
-            $checkOrderStmt = $this->conn->query("SELECT * FROM orders WHERE orderID = $orderID AND userID = $userID");
-            $order = $checkOrderStmt->fetch(PDO::FETCH_ASSOC);
+        // Validate order belongs to user
+        $checkOrderStmt = $this->conn->query("SELECT * FROM orders WHERE orderID = $orderID AND userID = $userID");
+        $order = $checkOrderStmt->fetch(PDO::FETCH_ASSOC);
             
-            // Get order amount for refund
-            $refundAmount = $order['totalAmount'];
-            $refundDate = date('Y-m-d');
+        // Get order amount for refund
+        $refundAmount = $order['totalAmount'];
+        $refundDate = date('Y-m-d');
             
-            // Check if status column exists
-            $checkColumnStmt = $this->conn->query("SHOW COLUMNS FROM orders LIKE 'status'");
+        // Check if status column exists
+        $checkColumnStmt = $this->conn->query("SHOW COLUMNS FROM orders LIKE 'status'");
             
-            if ($checkColumnStmt->rowCount() == 0){
-                // Add the status column if it doesn't exist
-                $addColumnStmt = $this->conn->query("ALTER TABLE orders ADD COLUMN status VARCHAR(20) DEFAULT 'active'");
-            }
+        if ($checkColumnStmt->rowCount() == 0){
             
-            // Save refund record
-            $this->conn->query("INSERT INTO refunds (userID, refundAmount, orderID, refundDate) VALUES ($userID, $refundAmount, $orderID, '$refundDate')");
-            $refundID = $this->conn->lastInsertId();
+        // Save refund record
+        $this->conn->query("INSERT INTO refunds (userID, refundAmount, orderID, refundDate) VALUES ($userID, $refundAmount, $orderID, '$refundDate')");
             
-            // Update order status
-            $this->conn->query("UPDATE orders SET status = 'refunded' WHERE orderID = $orderID AND userID = $userID");
-            
-            return array();
-            
+        // Update order status
+        $this->conn->query("UPDATE orders SET status = 'refunded' WHERE orderID = $orderID AND userID = $userID");
         }
-        catch (\PDOException $e){
-            return array();
-        }
+        return array();
     }
     
     /**
@@ -54,8 +40,9 @@ class Refund{
      */
     public function getUserRefunds($userID){
         try{
+            $conn = dbConnection::getConnection();
             $sql = "SELECT r.*, o.totalAmount as orderAmount FROM refunds r JOIN orders o ON r.orderID = o.orderID WHERE r.userID = :userID ORDER BY r.refundDate DESC";
-            $stmt = $this->conn->prepare($sql);
+            $stmt = $conn->prepare($sql);
             $stmt->bindParam(':userID', $userID, PDO::PARAM_INT);
             $stmt->execute();
             
