@@ -1,32 +1,32 @@
 <?php
-namespace Classes;
-
-use PDO;
-use PDOException;
-
 class dbConnection
 {
     private $host = "localhost";
-    private $db_name = "Tickets_db"; // Database name
-    private $username = "root"; // Database username
-    private $password = ""; // Database password (none in this case)
+    private $db_name = "tickets_db";
+    private $username = "root";
+    private $password = "";
     private static $connection = null;
 
-    // Using a static method to implement a Singleton-like pattern
-    public static function getConnection()
-    {
-        if (self::$connection === null) {
-            try {
-                // Set DSN
+    /**
+     * Get a database connection instance
+     * 
+     * @return PDO|null Database connection or null if connection failed
+     */
+    public static function getConnection(){
+        if (self::$connection === null){
+            try{
                 $dsn = "mysql:host=" . (new self)->host . ";dbname=" . (new self)->db_name;
-                self::$connection = new PDO($dsn, (new self)->username, (new self)->password);
-
-                // Optional PDO attributes
-                self::$connection->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-                self::$connection->setAttribute(PDO::ATTR_DEFAULT_FETCH_MODE, PDO::FETCH_ASSOC);
-            } catch (PDOException $e) {
-                // Handle connection error
-                echo "Connection failed: " . $e->getMessage();
+                $options =
+                [
+                    PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    PDO::ATTR_EMULATE_PREPARES => false,
+                ];
+                self::$connection = new PDO($dsn, (new self)->username, (new self)->password, $options);
+            }
+            catch (\PDOException $e) {
+                error_log("Database connection error: " . $e->getMessage());
+                return null;
             }
         }
         return self::$connection;

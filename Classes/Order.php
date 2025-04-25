@@ -1,45 +1,38 @@
 <?php
-namespace Classes;
+// Include dependencies
+require_once '../Classes/dbConnection.php';
 
-class Order
-{
+class Order{
     private $orderID;
-    private $userID;
-    private $totalAmount;
-    private $orderDate;
-
-    // Constructor to initialize Order
-    public function __construct($userID, $totalAmount)
-    {
-        $this->userID = $userID;
-        $this->totalAmount = $totalAmount;
-        $this->orderDate = date('Y-m-d H:i:s');
-    }
-
-    // Getter for orderID
     public function getOrderID()
     {
         return $this->orderID;
     }
 
-    // Method to save the order to the database
-    public function saveOrder()
-    {
-        try {
-            $db = Database::getConnection();
-            $sql = "INSERT INTO Orders (userID, totalAmount, orderDate) VALUES (:userID, :totalAmount, :orderDate)";
-            $stmt = $db->prepare($sql);
-
-            // Bind parameters
-            $stmt->bindParam(':userID', $this->userID);
-            $stmt->bindParam(':totalAmount', $this->totalAmount);
-            $stmt->bindParam(':orderDate', $this->orderDate);
-
-            // Execute the statement
-            $stmt->execute();
-            echo "Order placed successfully!";
-        } catch (PDOException $e) {
-            echo "Error: " . $e->getMessage();
+    /**
+     * Place an order: handles capacity, ticket creation, and order insertion
+     *
+     * @return array Order result with keys (id, event_name, event_date, event_location, quantity, total, order_date, success, [message])
+     */
+    public static function place(PDO $conn, $userId, array $eventDetails, int $quantity){
+        try{
+            $orderDate = date('Y-m-d');
+            $total = $eventDetails['eventPrice'] * $quantity;
+            // Insert order directly using eventID (no tickets table)
+            $conn->query("INSERT INTO orders (userID, eventID, totalAmount, orderDate, quantity) VALUES (" . $userId . ", " . $eventDetails['id'] . ", " . $total . ", '" . $orderDate . "', " . $quantity . ")");
+            return [
+                'success'        => true,
+                'id'             => $conn->lastInsertId(),
+                'event_name'     => $eventDetails['eventName'],
+                'event_date'     => $eventDetails['eventDate'],
+                'event_location' => $eventDetails['eventLocation'],
+                'quantity'       => $quantity,
+                'total'          => $total,
+                'order_date'     => $orderDate
+            ];
+        }
+        catch (PDOException $e){
+            return ['success' => false, 'message' => $e->getMessage()];
         }
     }
 }

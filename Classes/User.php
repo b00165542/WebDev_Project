@@ -1,33 +1,94 @@
 <?php
-class User {
+require_once'../Classes/dbConnection.php';
+require_once 'Admin.php';
+require_once 'Customer.php';
+class User{
     protected $userID;
-    protected $userName;
+
     protected $userEmail;
     protected $userPassword;
+    protected $isAdmin;
+    protected $name;
 
-    public function __construct($userID, $userName, $userEmail, $userPassword) {
+    public function __construct($userID, $userEmail, $isAdmin = 0, $userPassword = null, $name = ''){
         $this->userID = $userID;
-        $this->userName = $userName;
         $this->userEmail = $userEmail;
-        $this->userPassword = password_hash($userPassword, PASSWORD_DEFAULT);  // Store hashed password
+        $this->isAdmin = $isAdmin;
+        $this->name = $name;
+        $this->userPassword = $userPassword;
     }
 
-    // Only provide safe getters for the properties
-    public function getUserID() {
+    // Basic getters
+    public function getUserID(){
         return $this->userID;
     }
 
-    public function getUserName() {
-        return $this->userName;
+
+    
+    public function getName(){
+        return $this->name;
     }
 
-    public function getUserEmail() {
+    public function getUserEmail(){
         return $this->userEmail;
     }
+    
+    public function getIsAdmin(){
+        return $this->isAdmin;
+    }
+    
+    public function getUserPassword(){
+        return $this->userPassword;
+    }
+    /**
+     * Instantiate User or Admin from DB row.
+     */
+    public static function fromDb(array $data){
+        $class = $data['isAdmin'] ? Admin::class : Customer::class;
+        return new $class(
+            $data['userID'],
+            $data['userEmail'],
+            $data['isAdmin'],
+            $data['userPassword'], // Pass the password from DB
+            $data['name']
+        );
+    }
 
-    // Avoid returning raw password. If needed, add a password verification method
-    public function verifyPassword($password) {
-        return password_verify($password, $this->userPassword);
+    /**
+     * Find a user by email.
+     */
+    public static function findByEmail($email){
+        $db = dbConnection::getConnection();
+        $stmt = $db->prepare("SELECT * FROM users WHERE userEmail = :email");
+        $stmt->bindParam(':email', $email);
+        $stmt->execute();
+        $data = $stmt->fetch(\PDO::FETCH_ASSOC);
+        if ($data) {
+            return self::fromDb($data);
+        }
+        return null;
+    }
+
+    /**
+     * Save new user to database.
+     */
+    public function save(){
+        try {
+            $db = dbConnection::getConnection();
+
+            $sql = "INSERT INTO users (userPassword, userEmail, isAdmin, name) VALUES (:p, :e, :a, :n)";
+            $stmt = $db->prepare($sql);
+            $stmt->bindParam(':p', $this->userPassword);
+            $stmt->bindParam(':e', $this->userEmail);
+            $stmt->bindParam(':a', $this->isAdmin, \PDO::PARAM_INT);
+            $stmt->bindParam(':n', $this->name);
+            $executed = $stmt->execute();
+            if ($executed) {
+                $this->userID = (int)$db->lastInsertId();
+            }
+            return $executed;
+        } catch (\PDOException $e) {
+            return false;
+        }
     }
 }
-
