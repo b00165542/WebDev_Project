@@ -23,16 +23,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $password = $_POST['password'];
     
     try {
-        $conn = dbConnection::getConnection();
-        // Minimal: Directly insert user, no unique email check
-        $sql = "INSERT INTO users (userEmail, userPassword, name) VALUES (:email, :password, :name)";
-        $stmt = $conn->prepare($sql);
-        $stmt->bindParam(':email', $email);
-        $stmt->bindParam(':password', $password);
-        $stmt->bindParam(':name', $name);
-        $stmt->execute();
-        $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
-    } catch (\Exception $e) {}
+        // Use the User class to save the user
+        $user = new Customer(null, $email, 0, $password, $name);
+        if ($user->save()) {
+            $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
+        }
+    } catch (Exception $e) {}
 }
 
 include "../Layout/Header.php";
