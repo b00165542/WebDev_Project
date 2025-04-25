@@ -12,7 +12,7 @@ $events = array();
 $error_message = '';
 $success_message = '';
 
-try {
+try{
     // Get the PDO connection
     $conn = dbConnection::getConnection();
     if (isset($_GET['search'])) {
@@ -26,7 +26,8 @@ try {
         $location = '';
     }
     $events = Event::searchEvents($conn, $search, $location);
-} catch (\Exception $e) {$error_message = "We're experiencing technical difficulties. Please try again later.";}
+}
+catch (\Exception $e) {$error_message = "We're experiencing technical difficulties. Please try again later.";}
 
 include "../Layout/Header.php";
 ?>

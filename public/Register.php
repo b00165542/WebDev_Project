@@ -21,14 +21,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $name = $_POST['name'];
     $email = $_POST['email'];
     $password = $_POST['password'];
-    
-    try {
-        // Use the User class to save the user
-        $user = new Customer(null, $email, 0, $password, $name);
-        if ($user->save()) {
-            $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
-        }
-    } catch (Exception $e) {}
+
+    $user = new Customer(null, $email, 0, $password, $name);
+    if ($user->save()) {
+        $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
+    }
 }
 
 include "../Layout/Header.php";

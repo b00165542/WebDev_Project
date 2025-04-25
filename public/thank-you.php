@@ -4,13 +4,14 @@ include '../Layout/Header.php';
 $isLoggedIn = isset($_SESSION['userID']);
 
 // Redirect to login page if not logged in
-if (!$isLoggedIn) {
+if (!$isLoggedIn){
     header("Location: /SET/public/login.php?message=" . urlencode("You must be logged in to view this page."));
     exit;
 }
-if (isset($_SESSION['last_order'])) {
+if (isset($_SESSION['last_order'])){
     $order = $_SESSION['last_order'];
-} else {
+}
+else{
     $order = null;
 }
 
