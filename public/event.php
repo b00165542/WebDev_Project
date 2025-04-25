@@ -1,4 +1,5 @@
 <?php
+session_start();
 include "../Layout/Header.php";
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/Event.php';
@@ -28,7 +29,6 @@ $event = Event::findById($event_id);
                 $remaining = $event->getRemainingCapacity();
                 if ($remaining > 0) {
                     echo '<p><strong>Capacity:</strong> ' . $remaining . '/' . $event->getEventCapacity() . '</p>';
-                    echo '<p><strong>Status:</strong> Tickets Available</p>';
                 } else {
                     echo '<p class="sold-out-message"><strong>Sold Out</strong></p>';
                 }
@@ -37,7 +37,7 @@ $event = Event::findById($event_id);
         </div>
         <div class="event-actions">
             <?php if ($event->getRemainingCapacity() > 0) { ?>
-                <a href="checkout.php?event=<?php echo $event->getEventId(); ?>" class="btn">Buy Tickets</a>
+                <a href="checkout.php?event=<?php echo $event->getEventID(); ?>" class="btn">Buy Tickets</a>
             <?php } ?>
             <a href="product.php" class="btn">Back to Events</a>
         </div>

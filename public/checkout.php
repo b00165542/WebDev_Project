@@ -1,4 +1,5 @@
 <?php
+session_start();
 require_once '../Classes/session.php';
 session::requireLogin();
 if (!isset($_SESSION['userID'])) {
