@@ -1,4 +1,6 @@
 <?php
+session_start();
+
 // Include necessary classes
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/Event.php';

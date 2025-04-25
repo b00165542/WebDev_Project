@@ -7,10 +7,10 @@ class User{
 
     protected $userEmail;
     protected $userPassword;
-    protected int $isAdmin = 0;
+    protected $isAdmin;
     protected $name;
 
-    public function __construct($userID, $userEmail, $isAdmin, $userPassword, $name){
+    public function __construct($userID, $userEmail, $isAdmin = 0, $userPassword = null, $name = ''){
         $this->userID = $userID;
         $this->userEmail = $userEmail;
         $this->isAdmin = $isAdmin;

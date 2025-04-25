@@ -83,7 +83,7 @@ elseif ($section == 'orders') {
                 echo '<form method="POST" action="profile.php?section=orders">';
                 echo '<input type="hidden" name="refund_order_id" value="' . $order['orderID'] . '">';
                 echo '<input type="hidden" name="refund_request" value="1">';
-                echo '<button type="submit">Request Refund</button>';
+                echo '<button type="submit" class="btn">Request Refund</button>';
                 echo '</form>';
             }
             echo '</td>';
