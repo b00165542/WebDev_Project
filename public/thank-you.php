@@ -1,13 +1,8 @@
 <?php
+require_once '../Classes/session.php';
 include '../Layout/Header.php';
-// Check if user is logged in
-$isLoggedIn = isset($_SESSION['userID']);
+session::requireLogin();
 
-// Redirect to login page if not logged in
-if (!$isLoggedIn){
-    header("Location: /SET/public/login.php?message=" . urlencode("You must be logged in to view this page."));
-    exit;
-}
 if (isset($_SESSION['last_order'])){
     $order = $_SESSION['last_order'];
 }

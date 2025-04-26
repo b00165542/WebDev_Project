@@ -18,8 +18,14 @@ class Order{
         try{
             $orderDate = date('Y-m-d');
             $total = $eventDetails['eventPrice'] * $quantity;
-            // Insert order
-            $conn->query("INSERT INTO orders (userID, eventID, totalAmount, orderDate, quantity) VALUES (" . $userId . ", " . $eventDetails['id'] . ", " . $total . ", '" . $orderDate . "', " . $quantity . ")");
+            $stmt = $conn->prepare("INSERT INTO orders (userID, eventID, totalAmount, orderDate, quantity) VALUES (:userID, :eventID, :totalAmount, :orderDate, :quantity)");
+            $stmt->execute([
+                ':userID' => $userId,
+                ':eventID' => $eventDetails['id'],
+                ':totalAmount' => $total,
+                ':orderDate' => $orderDate,
+                ':quantity' => $quantity
+            ]);
             return [
                 'success'        => true,
                 'id'             => $conn->lastInsertId(),

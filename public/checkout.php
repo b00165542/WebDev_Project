@@ -1,39 +1,43 @@
 <?php
-session_start();
-require_once '../Classes/session.php';
+include "../Layout/Header.php";
 session::requireLogin();
 if (!isset($_SESSION['userID'])) {
     $sessionHandler = new session();
     $sessionHandler->forgetSession();
     exit();
 }
-include "../Layout/Header.php";
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/Order.php';
 require_once '../Classes/Event.php';
 require_once '../Classes/User.php';
 
-// Get event ID from URL
 $eventObj = null;
+$error_message = '';
 if (isset($_GET['event'])) {
-    try {
-        $eventObj = Event::findById($_GET['event']);
-    } catch (Exception $e) {}
+    $eventObj = Event::findById($_GET['event']);
 }
 
+//User validation
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj) {
-    $conn = dbConnection::getConnection();
-    try {
-        Order::place($conn, $_SESSION['userID'], [
-            'id' => $eventObj->getEventID(),
-            'eventPrice' => $eventObj->getEventPrice(),
-            'eventName' => $eventObj->getEventName(),
-            'eventDate' => $eventObj->getEventDate(),
-            'eventLocation' => $eventObj->getEventLocation()
-        ], 1);
-    } catch (Exception $e) {}
-    header("Location: /SET/public/thank-you.php");
-    exit;
+    $cardNumber = $_POST['cardNumber'];
+    $cvv = $_POST['cvv'];
+    if (strlen($cardNumber) !== 16 || !ctype_digit($cardNumber)) {
+        $error_message = 'Error: Card number must be 16 digits.';
+    } elseif (strlen($cvv) !== 3 || !ctype_digit($cvv)) {
+        $error_message = 'Error: CVV must be 3 digits.';
+    } else {
+        $conn = dbConnection::getConnection();
+        Order::place($conn, $_SESSION['userID'],
+            [
+              'id' => $eventObj->getEventID(),
+              'eventPrice' => $eventObj->getEventPrice(),
+              'eventName' => $eventObj->getEventName(),
+              'eventDate' => $eventObj->getEventDate(),
+              'eventLocation' => $eventObj->getEventLocation()
+            ], 1);
+        header("Location: /SET/public/thank-you.php");
+        exit;
+    }
 }
 ?>
 <div class="container">
@@ -42,6 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj) {
         <div class="checkout-form card">
             <h2>Billing Information</h2>
             <?php if ($eventObj) { ?>
+            <?php if (!empty($error_message)) { ?>
+                <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <?php } ?>
             <form id="checkout-form" action="/SET/public/checkout.php?event=<?php echo $eventObj->getEventID(); ?>" method="POST">
                 <div class="form-group">
                     <label for="fullName">Full Name</label>

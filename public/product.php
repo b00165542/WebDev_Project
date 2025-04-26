@@ -1,37 +1,29 @@
 <?php
-session_start();
-
-// Include necessary classes
+include "../Layout/Header.php";
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/Event.php';
-require_once '../Classes/session.php';
-
-session::requireLogin();
-
-$isLoggedIn = true;
 
 $events = array();
 $error_message = '';
 $success_message = '';
 
 try{
-    // Get the PDO connection
     $conn = dbConnection::getConnection();
     if (isset($_GET['search'])) {
         $search = $_GET['search'];
-    } else {
+    }
+    else {
         $search = '';
     }
     if (isset($_GET['location']) && $_GET['location'] !== 'all') {
         $location = $_GET['location'];
-    } else {
+    }
+    else {
         $location = '';
     }
-    $events = Event::searchEvents($conn, $search, $location);
+    $events = Event::searchEvents($search, $location);
 }
 catch (\Exception $e) {$error_message = "We're experiencing technical difficulties. Please try again later.";}
-
-include "../Layout/Header.php";
 ?>
 
 <h1>Sports Events</h1>

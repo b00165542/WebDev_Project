@@ -1,8 +1,6 @@
 <?php
-// Include session class
 require_once '../Classes/session.php';
 
-// Start session if not already started
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }

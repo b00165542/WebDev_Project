@@ -61,12 +61,12 @@ try {
     $pdo->exec("INSERT INTO `events` (`id`, `eventDate`, `eventName`, `eventLocation`, `eventPrice`, `eventCapacity`) VALUES
     (1, '2025-03-25', 'Gaelic Football', 'Cork', 15, 100),
     (2, '2025-07-12', 'Concert', 'Los Angeles', 25, 45),
-    (5, '2025-05-22', 'Just Dance', 'Galway', 10.5, 35),
-    (7, '2025-07-25', 'Test', 'Belfast', 69, 1);");
+    (3, '2025-05-22', 'Just Dance', 'Galway', 10.5, 35),
+    (4, '2025-07-25', 'Test', 'Belfast', 69, 1);");
 
     $pdo->exec("INSERT INTO `users` (`userID`, `userPassword`, `userEmail`, `isAdmin`, `name`) VALUES
-    (13, 'password', 'a@a.a', 1, 'Admin'),
-    (15, 'password', 'u@u.u', 0, 'User');");
+    (2, 'password', 'a@a.a', 1, 'Admin'),
+    (3, 'password', 'u@u.u', 0, 'User');");
 
     $pdo->exec("INSERT INTO `orders` (`orderID`, `userID`, `eventID`, `totalAmount`, `orderDate`, `quantity`, `status`) VALUES
     (56, 15, 7, 69, '2025-04-25', 1, 'active');");

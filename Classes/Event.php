@@ -123,7 +123,8 @@ class Event
         return $e;
     }
 
-    public static function searchEvents($connection, $search, $location = '') {
+    public static function searchEvents($search, $location = '') {
+        $connection = dbConnection::getConnection();
         $sql = "SELECT * FROM events WHERE 1";
         $params = array();
         if ($search !== '') {

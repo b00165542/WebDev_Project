@@ -1,13 +1,7 @@
 <?php
-session_start();
 include "../Layout/Header.php";
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/Event.php';
-require_once '../Classes/session.php';
-
-session::requireLogin();
-
-$isLoggedIn = true;
 
 $event_id = (int)$_GET['id'];
 
@@ -39,7 +33,7 @@ $event = Event::findById($event_id);
             <?php if ($event->getRemainingCapacity() > 0) { ?>
                 <a href="checkout.php?event=<?php echo $event->getEventID(); ?>" class="btn">Buy Tickets</a>
             <?php } ?>
-            <a href="product.php" class="btn">Back to Events</a>
+            <a href="product.php" class="btn">To Events</a>
         </div>
     </div>
 </div>

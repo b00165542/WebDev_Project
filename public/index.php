@@ -4,7 +4,7 @@ require_once '../Classes/dbConnection.php';
 require_once '../Classes/Event.php';
 
 $featured_event = Event::findById(1);
-$upcoming_events = Event::getAll();
+$upcoming_events = array_slice(Event::getAll(), 0, 3);
 ?>
 
 <?php if ($featured_event) { ?>

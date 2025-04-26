@@ -1,45 +1,48 @@
 <?php
-// Include necessary classes
+include "../Layout/Header.php";
 require_once '../Classes/Customer.php';
 require_once '../Classes/User.php';
 require_once '../Classes/dbConnection.php';
 require_once '../Classes/session.php';
 
-// Initialize variables
 $registerName = $registerEmail = '';
 $success_message = '';
+$error_message = '';
 
 // Check if user is already logged in
 if (isset($_SESSION['userID'])) {
-    // Redirect to the profile page
     header("Location: profile.php");
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-
     $registerName = $_POST['name'];
     $registerEmail = $_POST['email'];
     $password = $_POST['password'];
 
-    $user = new Customer(null, $registerEmail, $password, $registerName, 0);
-    if ($user->save()) {
-        $success_message = "Registration successful! You can now <a href='login.php'>login</a>.";
+    // Check for duplicate email
+    if (User::findByEmail($registerEmail)) {
+        $error_message = "Error: A user with this email already exists.";
+    } else {
+        $user = new Customer(null, $registerEmail, $password, $registerName, 0);
+        if ($user->save()) {
+            $success_message = "Registration successful! You can now login. Redirecting...";
+            echo '<script>setTimeout(function(){ window.location.href = "login.php"; }, 2500);</script>';
+        }
     }
 }
-
-include "../Layout/Header.php";
-
 ?>
 
 <div class="container centered-form-container">
     <div class="card">
         <form id="register-form" action="../public/Register.php" method="POST" novalidate>
             <h2 class="card-title">Create an Account</h2>
-            <?php if ($_SERVER['REQUEST_METHOD'] === 'POST' && !empty($_POST)) { ?>
+            <?php if (!empty($success_message)) { ?>
             <div class="notification success">
-                Registration successful! You can now <a href='login.php'>login</a>.
+                <?php echo $success_message; ?>
             </div>
+            <?php } elseif (!empty($error_message)) { ?>
+            <div class="alert alert-danger"><?php echo $error_message; ?></div>
             <?php } ?>
             
             <div class="form-group">
