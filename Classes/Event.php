@@ -44,7 +44,6 @@ class Event
     }
 
     public function saveEvent(){
-        try {
             $db = dbConnection::getConnection();
 
             if ($this->eventID) {
@@ -73,17 +72,11 @@ class Event
             if (!$this->eventID) {
                 $this->eventID = $db->lastInsertId();
             }
-
-            return true;
-        }
-        catch (PDOException $e) {
-            return false;
-        }
     }
 
     public static function getAll(){
         $db = dbConnection::getConnection();
-        $sql = "SELECT id, eventName, eventLocation, eventDate, eventPrice, eventCapacity FROM events ORDER BY eventDate DESC";
+        $sql = "SELECT * FROM events ORDER BY eventDate DESC";
         $stmt = $db->prepare($sql);
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -104,14 +97,11 @@ class Event
 
     public static function findById($eventId){
         $db = dbConnection::getConnection();
-        $sql = "SELECT id, eventName, eventLocation, eventDate, eventPrice, eventCapacity FROM events WHERE id = :id";
+        $sql = "SELECT * FROM events WHERE id = :id";
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $eventId, PDO::PARAM_INT);
         $stmt->execute();
         $r = $stmt->fetch(PDO::FETCH_ASSOC);
-        if (!$r) {
-            return null;
-        }
         $e = new self(
             $r['eventName'],
             $r['eventLocation'],

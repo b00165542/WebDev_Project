@@ -7,7 +7,7 @@ $featured_event = Event::findById(1);
 $upcoming_events = array_slice(Event::getAll(), 0, 3);
 ?>
 
-<?php if ($featured_event) { ?>
+<?php if ($featured_event){ ?>
     <h2>Featured Event</h2>
     <div class="featured-event">
         <h3><?php echo htmlspecialchars((string)$featured_event->getEventName()); ?></h3>
@@ -21,9 +21,9 @@ $upcoming_events = array_slice(Event::getAll(), 0, 3);
 <?php } ?>
 
 <h2>Upcoming Events</h2>
-<?php if (!empty($upcoming_events)) { ?>
+<?php if (!empty($upcoming_events)){ ?>
     <div class="event-grid">
-    <?php foreach ($upcoming_events as $event) { ?>
+    <?php foreach ($upcoming_events as $event){ ?>
         <div class="event-card">
             <h3><?php echo htmlspecialchars((string)$event->getEventName()); ?></h3>
             <p>Location: <?php echo htmlspecialchars((string)$event->getEventLocation()); ?></p>
@@ -35,7 +35,7 @@ $upcoming_events = array_slice(Event::getAll(), 0, 3);
         </div>
     <?php } ?>
     </div>
-<?php } else { ?>
+<?php } else{ ?>
     <p>No upcoming events at this time. Check back soon!</p>
 <?php } ?>
 

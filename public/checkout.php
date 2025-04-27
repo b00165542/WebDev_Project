@@ -1,7 +1,7 @@
 <?php
 include "../Layout/Header.php";
 session::requireLogin();
-if (!isset($_SESSION['userID'])) {
+if (!isset($_SESSION['userID'])){
     $sessionHandler = new session();
     $sessionHandler->forgetSession();
     exit();
@@ -13,19 +13,21 @@ require_once '../Classes/User.php';
 
 $eventObj = null;
 $error_message = '';
-if (isset($_GET['event'])) {
+if (isset($_GET['event'])){
     $eventObj = Event::findById($_GET['event']);
 }
 
 //User validation
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj) {
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj){
     $cardNumber = $_POST['cardNumber'];
     $cvv = $_POST['cvv'];
-    if (strlen($cardNumber) !== 16 || !ctype_digit($cardNumber)) {
+    if (strlen($cardNumber) !== 16 || !ctype_digit($cardNumber)){
         $error_message = 'Error: Card number must be 16 digits.';
-    } elseif (strlen($cvv) !== 3 || !ctype_digit($cvv)) {
+    }
+    elseif (strlen($cvv) !== 3 || !ctype_digit($cvv)){
         $error_message = 'Error: CVV must be 3 digits.';
-    } else {
+    }
+    else{
         $conn = dbConnection::getConnection();
         Order::place($conn, $_SESSION['userID'],
             [
@@ -45,10 +47,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj) {
     <div class="checkout-container">
         <div class="checkout-form card">
             <h2>Billing Information</h2>
-            <?php if ($eventObj) { ?>
-            <?php if (!empty($error_message)) { ?>
-                <div class="alert alert-danger"><?php echo $error_message; ?></div>
-            <?php } ?>
             <form id="checkout-form" action="/SET/public/checkout.php?event=<?php echo $eventObj->getEventID(); ?>" method="POST">
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
@@ -70,13 +68,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj) {
                     <button type="submit" class="btn btn-primary btn-block">Complete Purchase</button>
                 </div>
             </form>
-            <?php } else { ?>
-            <p>No event selected.</p>
-            <?php } ?>
         </div>
         <div class="order-summary card">
             <h2>Order Summary</h2>
-            <?php if ($eventObj) { ?>
+            <?php if ($eventObj){ ?>
             <div class="event-details">
                 <h3><?php echo $eventObj->getEventName(); ?></h3>
                 <p><?php echo $eventObj->getEventLocation(); ?></p>

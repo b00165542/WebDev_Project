@@ -44,7 +44,7 @@ class User{
      * Instantiate User or Admin from DB row.
      */
     public static function fromDb(array $data){
-        if ($data['isAdmin']) {
+        if ($data['isAdmin']){
             return new Admin(
                 $data['userID'],
                 $data['userEmail'],
@@ -52,7 +52,7 @@ class User{
                 $data['name'],
                 $data['isAdmin']
             );
-        } else {
+        } else{
             return new Customer(
                 $data['userID'],
                 $data['userEmail'],
@@ -72,7 +72,7 @@ class User{
         $stmt->bindParam(':email', $email);
         $stmt->execute();
         $data = $stmt->fetch(\PDO::FETCH_ASSOC);
-        if ($data) {
+        if ($data){
             return self::fromDb($data);
         }
         return null;
@@ -82,7 +82,7 @@ class User{
      * Save new user to database.
      */
     public function save(){
-        try {
+        try{
             $db = dbConnection::getConnection();
 
             $sql = "INSERT INTO users (userPassword, userEmail, isAdmin, name) VALUES (:p, :e, :a, :n)";
@@ -96,7 +96,8 @@ class User{
                 $this->userID = (int)$db->lastInsertId();
             }
             return $executed;
-        } catch (\PDOException $e) {
+        }
+        catch (\PDOException $e){
             return false;
         }
     }

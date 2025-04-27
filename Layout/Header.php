@@ -1,15 +1,14 @@
 <?php
 require_once '../Classes/session.php';
 
-if (session_status() == PHP_SESSION_NONE) {
     session_start();
-}
+
 
 // Check if user is logged in
 $isLoggedIn = isset($_SESSION['userID']);
-if ($isLoggedIn && isset($_SESSION['name'])) {
+if ($isLoggedIn && isset($_SESSION['name'])){
     $name = $_SESSION['name'];
-} else {
+} else{
     $name = 'Guest';
 }
 $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1;
@@ -30,10 +29,10 @@ $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1;
             <a href="/SET/public/product.php">Events</a>
         </div>
         <div>
-            <?php if ($isLoggedIn) { ?>
+            <?php if ($isLoggedIn){ ?>
             <a href="/SET/public/profile.php">Hi, <?php echo $name; ?></a>
             <a href="/SET/public/logout.php">Logout</a>
-            <?php } else { ?>
+            <?php } else{ ?>
             <a href="/SET/public/login.php">Login</a>
             <a href="/SET/public/register.php">Register</a>
             <?php } ?>
