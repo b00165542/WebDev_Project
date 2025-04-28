@@ -69,7 +69,7 @@ try {
     (3, 'password', 'u@u.u', 0, 'User');");
 
     $pdo->exec("INSERT INTO `orders` (`orderID`, `userID`, `eventID`, `totalAmount`, `orderDate`, `quantity`, `status`) VALUES
-    (56, 15, 7, 69, '2025-04-25', 1, 'active');");
+    (56, 2, 7, 69, '2025-04-25', 1, 'active');");
 
     echo "<h2>Database install complete!</h2><p>All tables and demo data loaded.<br>Admin login: a@a.a / password<br>User login: u@u.u / password</p>";
 } catch (Exception $e) {
