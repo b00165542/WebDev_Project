@@ -126,14 +126,17 @@ class Event
             $sql .= " AND eventLocation = :location";
             $params[':location'] = $location;
         }
-        $stmt = $connection->prepare($sql);
-        if (isset($params[':search'])) {
-            $stmt->bindValue(':search', $params[':search']);
+        if ($search === '' && $location === '') {
+            $stmt = $connection->prepare("SELECT * FROM events");
+            $stmt->execute();
         }
-        if (isset($params[':location'])) {
-            $stmt->bindValue(':location', $params[':location']);
+        else {
+            $stmt = $connection->prepare($sql);
+            foreach ($params as $key => $value) {
+                $stmt->bindValue($key, $value, PDO::PARAM_STR);
+            }
+            $stmt->execute();
         }
-        $stmt->execute();
         $events = [];
         while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
             $event = new Event($row['eventName'], $row['eventLocation'], $row['eventDate'], $row['eventPrice'], $row['eventCapacity']);

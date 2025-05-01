@@ -44,7 +44,7 @@ class User{
      * Instantiate User or Admin from DB row.
      */
     public static function fromDb(array $data){
-        if ($data['isAdmin']){
+        if ($data['isAdmin']) {
             return new Admin(
                 $data['userID'],
                 $data['userEmail'],
@@ -52,15 +52,14 @@ class User{
                 $data['name'],
                 $data['isAdmin']
             );
-        } else{
-            return new Customer(
-                $data['userID'],
-                $data['userEmail'],
-                $data['userPassword'],
-                $data['name'],
-                $data['isAdmin']
-            );
         }
+        return new Customer(
+            $data['userID'],
+            $data['userEmail'],
+            $data['userPassword'],
+            $data['name'],
+            $data['isAdmin']
+        );
     }
 
     /**

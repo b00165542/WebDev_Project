@@ -1,16 +1,10 @@
 <?php
 require_once '../Classes/session.php';
+session_start();
 
-    session_start();
-
-
-// Check if user is logged in
-$isLoggedIn = isset($_SESSION['userID']);
-if ($isLoggedIn && isset($_SESSION['name'])){
-    $name = $_SESSION['name'];
-} else{
-    $name = 'Guest';
-}
+// Use session class for login logic
+$isLoggedIn = session::isLoggedIn();
+$name = $isLoggedIn && isset($_SESSION['name']) ? $_SESSION['name'] : 'Guest';
 $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1;
 ?>
 <!DOCTYPE html>

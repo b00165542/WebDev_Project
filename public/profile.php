@@ -33,16 +33,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id']) &&
     $orderID = (int)$_POST['refund_order_id'];
     $refund = new Refund();
     $result = $refund->processRefund($userID, $orderID);
-    if (!empty($result['message'])){
-        $message = urlencode($result['message']);
-    }
-    else{
+    if ($result) {
         $message = urlencode('Refund processed.');
-    }
-    if (!empty($result['success'])){
         header("Location: profile.php?section=orders&refund_success=1&message=" . $message);
-    }
-    else{
+    } else {
+        $message = urlencode('Refund failed.');
         header("Location: profile.php?section=orders&refund_error=1&message=" . $message);
     }
     exit();

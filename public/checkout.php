@@ -36,7 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj){
               'eventName' => $eventObj->getEventName(),
               'eventDate' => $eventObj->getEventDate(),
               'eventLocation' => $eventObj->getEventLocation()
-            ], 1);
+            ]
+        );
         header("Location: /SET/public/thank-you.php");
         exit;
     }
@@ -47,6 +48,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj){
     <div class="checkout-container">
         <div class="checkout-form card">
             <h2>Billing Information</h2>
+            <?php if (!empty($error_message)) { ?>
+                <div class="alert alert-danger"><?php echo $error_message; ?></div>
+            <?php } ?>
             <form id="checkout-form" action="/SET/public/checkout.php?event=<?php echo $eventObj->getEventID(); ?>" method="POST">
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
