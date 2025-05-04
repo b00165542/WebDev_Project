@@ -22,8 +22,8 @@ require_once '../Classes/Order.php';
             <h2>What's Next?</h2>
             <p>Your ticket information has been saved to your account. You can view your purchase history in your profile.</p>
             <div class="action-buttons">
-                <a href="/SET/public/profile.php" class="btn btn-primary"><i class="fa fa-user"></i> View Your Profile</a>
-                <a href="/SET/public/product.php" class="btn btn-secondary"><i class="fa fa-ticket"></i> Browse More Events</a>
+                <a href="../public/profile.php" class="btn btn-primary"><i class="fa fa-user"></i> View Your Profile</a>
+                <a href="../public/product.php" class="btn btn-secondary"><i class="fa fa-ticket"></i> Browse More Events</a>
             </div>
         </div>
     </div>

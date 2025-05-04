@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
 
 <div class="container centered-form-container">
     <div class="card">
-        <form id="login-form" action="/SET/public/login.php" method="POST">
+        <form id="login-form" action="../public/login.php" method="POST">
             <h2 class="card-title">Login to Your Account</h2>
             <?php if (!empty($success_message)){ ?>
                 <div class="alert alert-success" id="msg"><?php echo $success_message; ?></div>
@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
                 <button type="submit" class="btn btn-primary">Login</button>
             </div>
             <div class="form-footer">
-                <p>Don't have an account? <a href="/SET/public/register.php">Sign up</a></p>
+                <p>Don't have an account? <a href="../public/register.php">Sign up</a></p>
             </div>
         </form>
     </div>

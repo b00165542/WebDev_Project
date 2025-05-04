@@ -65,7 +65,7 @@ $conn = null;
     <h1>Event Management</h1>
     <?php if (!empty($error_message)){ echo '<div class="notification error">' . $error_message . '</div>';} ?>
     <?php if (!empty($success_message)){ echo '<div class="notification success">' . $success_message . '</div>';} ?>
-    <form method="POST" action="/SET/public/admin_events.php">
+    <form method="POST" action="../public/admin_events.php">
         <?php if ($event_to_edit){ echo '<input type="hidden" name="event_id" value="' . $event_to_edit->getEventID() . '">';} ?>
         <label for="event_name">Event Name</label>
         <input type="text" id="event_name" name="event_name" value="<?php if ($event_to_edit){ echo $event_to_edit->getEventName();} ?>" required>
@@ -78,7 +78,7 @@ $conn = null;
         <label for="event_capacity">Capacity</label>
         <input type="number" id="event_capacity" name="event_capacity" min="1" value="<?php if ($event_to_edit){ echo $event_to_edit->getEventCapacity();} ?>" required>
         <button type="submit" name="save_event" class="btn"><?php if ($event_to_edit){ echo 'Update';} else{ echo 'Create';} ?></button>
-        <?php if ($event_to_edit){ echo '<a href="/SET/public/admin_events.php" class="btn">Cancel</a>'; } ?>
+        <?php if ($event_to_edit){ echo '<a href="../public/admin_events.php" class="btn">Cancel</a>'; } ?>
     </form>
     <h2>Event List</h2>
     <?php if (empty($events)){ echo '<div class="notification info">No events found.</div>';} else{ ?>
@@ -86,7 +86,7 @@ $conn = null;
         <?php foreach ($events as $event){ ?>
             <li>
                 <?php echo $event->getEventName() . ' (' . $event->getEventLocation() . ')'; ?>
-                <form method="POST" style="display:inline;">
+                <form method="POST">
                     <input type="hidden" name="event_id" value="<?php echo $event->getEventID(); ?>">
                     <button type="submit" name="edit_event" class="btn">Edit</button>
                     <button type="submit" name="delete_event" class="btn" onclick="return confirm('Delete this event?');">Delete</button>

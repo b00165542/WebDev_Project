@@ -106,7 +106,7 @@ elseif ($section == 'refunds'){
 }
 elseif ($section == 'admin' && $isAdmin) {
     echo '<h2>Admin Section</h2>';
-    echo '<p>Access your <a href="/SET/public/admin_events.php">Event Management</a> panel.</p>';
+    echo '<p>Access your <a href="../public/admin_events.php">Event Management</a> panel.</p>';
 }
 ?>
 

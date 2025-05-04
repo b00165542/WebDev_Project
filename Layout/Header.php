@@ -13,7 +13,7 @@ $isAdmin = isset($_SESSION['isAdmin']) && $_SESSION['isAdmin'] == 1;
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sports Event Ticketing</title>
-    <link rel="stylesheet" href="/SET/public/css/simple.css">
+    <link rel="stylesheet" href="../public/css/simple.css">
 </head>
 <body>
 <header>

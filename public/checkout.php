@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj){
             <?php if (!empty($error_message)) { ?>
                 <div class="alert alert-danger"><?php echo $error_message; ?></div>
             <?php } ?>
-            <form id="checkout-form" action="/SET/public/checkout.php?event=<?php echo $eventObj->getEventID(); ?>" method="POST">
+            <form id="checkout-form" action="../public/checkout.php?event=<?php echo $eventObj->getEventID(); ?>" method="POST">
                 <div class="form-group">
                     <label for="fullName">Full Name</label>
                     <input type="text" id="fullName" name="fullName" class="form-control" required placeholder="Enter Name">

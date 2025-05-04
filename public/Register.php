@@ -72,7 +72,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             
             <div class="form-footer">
-                <p>Already have an account? <a href="/SET/public/login.php">Login</a></p>
+                <p>Already have an account? <a href="../public/login.php">Login</a></p>
             </div>
         </form>
     </div>
