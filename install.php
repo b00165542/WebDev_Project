@@ -1,7 +1,7 @@
 <?php
 $host = 'localhost';
 $user = 'root'; 
-$pass = '';
+$pass = 'root';
 $db = 'tickets_db';
 $port = 3306;
 
