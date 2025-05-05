@@ -5,61 +5,56 @@ require_once '../Classes/dbConnection.php';
 require_once '../Classes/Admin.php';
 require_once '../Classes/Event.php';
 
-$isLoggedIn = true;
-$isAdmin = !empty($_SESSION['isAdmin']);
-if (!$isAdmin){
+if (empty($_SESSION['isAdmin'])) {
     header("Location: /SET/public/login.php");
     exit;
 }
+
 $error_message = '';
 $success_message = '';
 $event_to_edit = null;
-$conn = dbConnection::getConnection();
 $admin = new Admin($_SESSION['userID'], $_SESSION['userEmail'], '', $_SESSION['name'], 1);
-if ($_SERVER['REQUEST_METHOD'] === 'POST'){
-    if (isset($_POST['save_event'])){
-        $eventId = $_POST['event_id'];
-        $eventName = $_POST['event_name'];
-        $eventLocation = $_POST['event_location'];
-        $eventPrice = $_POST['event_price'];
-        $eventCapacity = $_POST['event_capacity'];
-        $eventDate = $_POST['event_date'];
-        if ($eventId){
-            if ($admin->updateEvent($eventId, $eventName, $eventLocation, $eventDate, $eventPrice, $eventCapacity)){
-                    $success_message = "Event updated successfully!";
-            }
-            else{
-                    $error_message = "Error updating event.";
-            }
+
+if (isset($_POST['save_event'])) {
+    $eventId = $_POST['event_id'];
+    $eventName = $_POST['event_name'];
+    $eventLocation = $_POST['event_location'];
+    $eventPrice = $_POST['event_price'];
+    $eventCapacity = $_POST['event_capacity'];
+    $eventDate = $_POST['event_date'];
+    if ($eventId) {
+        if ($admin->updateEvent($eventId, $eventName, $eventLocation, $eventDate, $eventPrice, $eventCapacity)) {
+            $success_message = "Event updated successfully!";
+        } else {
+            $error_message = "Error updating event.";
         }
-        else{
-                $newEvent = $admin->createEvent($eventName, $eventLocation, $eventDate, $eventPrice, $eventCapacity);
-                if ($newEvent && $newEvent->getEventID()){
-                    $success_message = "Event created successfully!";
-                }
-                else{
-                    $error_message = "Error creating event.";
-                }
-        }
-    }
-    if (isset($_POST['delete_event'])){
-        $eventId = $_POST['event_id'];
-        if ($eventId && $admin->deleteEvent($eventId)){
-            $success_message = "Event deleted successfully!";
-        }
-        else{
-                $error_message = "Error deleting event.";
-        }
-    }
-    if (isset($_POST['edit_event'])){
-        $eventId =$_POST['event_id'];
-        if ($eventId){
-            $event_to_edit = Event::findById($eventId);
+    } else {
+        $newEvent = $admin->createEvent($eventName, $eventLocation, $eventDate, $eventPrice, $eventCapacity);
+        if ($newEvent && $newEvent->getEventID()) {
+            $success_message = "Event created successfully!";
+        } else {
+            $error_message = "Error creating event.";
         }
     }
 }
+
+if (isset($_POST['delete_event'])) {
+    $eventId = $_POST['event_id'];
+    if ($eventId && $admin->deleteEvent($eventId)) {
+        $success_message = "Event deleted successfully!";
+    } else {
+        $error_message = "Error deleting event.";
+    }
+}
+
+if (isset($_POST['edit_event'])) {
+    $eventId = $_POST['event_id'];
+    if ($eventId) {
+        $event_to_edit = Event::findById($eventId);
+    }
+}
+
 $events = Event::getAll();
-$conn = null;
 ?>
 <div class="container">
     <h1>Event Management</h1>

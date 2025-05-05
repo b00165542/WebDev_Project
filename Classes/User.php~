@@ -44,7 +44,7 @@ class User{
      * Instantiate User or Admin from DB row.
      */
     public static function fromDb(array $data){
-        if ($data['isAdmin'] == 1) {
+        if (isset($data['isAdmin']) && $data['isAdmin'] == 1) {
             return new Admin(
                 $data['userID'],
                 $data['userEmail'],

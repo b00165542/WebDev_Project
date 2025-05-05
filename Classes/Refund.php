@@ -6,8 +6,22 @@ class Refund{
         $order = $conn->query("SELECT * FROM orders WHERE orderID = $orderID AND userID = $userID")->fetch(PDO::FETCH_ASSOC);
         $refundAmount = $order['totalAmount'];
         $refundDate = date('Y-m-d');
-        $conn->prepare("INSERT INTO refunds (userID, refundAmount, orderID, refundDate) VALUES (?, ?, ?, ?)")
-             ->execute([$userID, $refundAmount, $orderID, $refundDate]);
+        $new_refund = [
+            'userID' => $userID,
+            'refundAmount' => $refundAmount,
+            'orderID' => $orderID,
+            'refundDate' => $refundDate
+        ];
+        $sql = sprintf(
+            "INSERT INTO refunds (%s) VALUES (%s)",
+            implode(", ", array_keys($new_refund)),
+            ":" . implode(", :", array_keys($new_refund))
+        );
+        $stmt = $conn->prepare($sql);
+        foreach ($new_refund as $key => $value) {
+            $stmt->bindValue(":" . $key, $value);
+        }
+        $stmt->execute();
         $conn->prepare("UPDATE orders SET status = 'refunded' WHERE orderID = ? AND userID = ?")
              ->execute([$orderID, $userID]);
         return true;

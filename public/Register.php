@@ -6,16 +6,15 @@ require_once '../Classes/dbConnection.php';
 require_once '../Classes/session.php';
 
 $registerName = $registerEmail = '';
-$success_message = '';
 $error_message = '';
 
 // Check if user is already logged in
-if (isset($_SESSION['userID'])) {
+if (session::isLoggedIn()) {
     header("Location: profile.php");
     exit();
 }
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+if (!empty($_POST)) {
     $registerName = $_POST['name'];
     $registerEmail = $_POST['email'];
     $password = $_POST['password'];
@@ -26,8 +25,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         $user = new Customer(null, $registerEmail, $password, $registerName, 0);
         if ($user->save()) {
-            $success_message = "Registration successful! You can now login. Redirecting...";
-            echo '<script>setTimeout(function(){ window.location.href = "login.php"; }, 2500);</script>';
+            header("Location: login.php");
+            exit();
         }
     }
 }
@@ -37,12 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <div class="card">
         <form id="register-form" action="../public/Register.php" method="POST" novalidate>
             <h2 class="card-title">Create an Account</h2>
-            <?php if (!empty($success_message)) { ?>
-            <div class="notification success">
-                <?php echo $success_message; ?>
+            <?php if (!empty($error_message)) { ?>
+            <div class="notification error">
+                <?php echo $error_message; ?>
             </div>
-            <?php } elseif (!empty($error_message)) { ?>
-            <div class="alert alert-danger"><?php echo $error_message; ?></div>
             <?php } ?>
             
             <div class="form-group">

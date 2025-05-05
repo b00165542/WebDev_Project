@@ -29,7 +29,7 @@ if ($conn){
     $refunds = (new Refund())->getUserRefunds($userID);
 }
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['refund_order_id']) && isset($_POST['refund_request'])){
+if (!empty($_POST) && isset($_POST['refund_order_id']) && isset($_POST['refund_request'])){
     $orderID = (int)$_POST['refund_order_id'];
     $refund = new Refund();
     $result = $refund->processRefund($userID, $orderID);

@@ -18,7 +18,7 @@ if (isset($_GET['event'])){
 }
 
 //User validation
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && $eventObj){
+if (!empty($_POST) && $eventObj){
     $cardNumber = $_POST['cardNumber'];
     $cvv = $_POST['cvv'];
     if (strlen($cardNumber) !== 16 || !ctype_digit($cardNumber)){

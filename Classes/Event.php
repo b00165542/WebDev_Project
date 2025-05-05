@@ -56,17 +56,30 @@ class Event
                     WHERE id = :eventID";
             $stmt = $db->prepare($sql);
             $stmt->bindParam(':eventID', $this->eventID);
+            $stmt->bindParam(':eventName', $this->eventName);
+            $stmt->bindParam(':eventLocation', $this->eventLocation);
+            $stmt->bindParam(':eventDate', $this->eventDate);
+            $stmt->bindParam(':eventPrice', $this->eventPrice);
+            $stmt->bindParam(':eventCapacity', $this->eventCapacity);
         }
         else{
-            $sql = "INSERT INTO events (eventName, eventLocation, eventDate, eventPrice, eventCapacity) VALUES (:eventName, :eventLocation, :eventDate, :eventPrice, :eventCapacity)";
+            $new_event = [
+                'eventName' => $this->eventName,
+                'eventLocation' => $this->eventLocation,
+                'eventDate' => $this->eventDate,
+                'eventPrice' => $this->eventPrice,
+                'eventCapacity' => $this->eventCapacity
+            ];
+            $sql = sprintf(
+                "INSERT INTO events (%s) VALUES (%s)",
+                implode(", ", array_keys($new_event)),
+                ":" . implode(", :", array_keys($new_event))
+            );
             $stmt = $db->prepare($sql);
+            foreach ($new_event as $key => $value) {
+                $stmt->bindValue(":" . $key, $value);
+            }
         }
-        $stmt->bindParam(':eventName', $this->eventName);
-        $stmt->bindParam(':eventLocation', $this->eventLocation);
-        $stmt->bindParam(':eventDate', $this->eventDate);
-        $stmt->bindParam(':eventPrice', $this->eventPrice);
-        $stmt->bindParam(':eventCapacity', $this->eventCapacity);
-
         $stmt->execute();
 
         if (!$this->eventID) {
@@ -82,15 +95,15 @@ class Event
         $stmt->execute();
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $events = [];
-        foreach ($rows as $r) {
-            $e = new self(
-                $r['eventName'],
-                $r['eventLocation'],
-                $r['eventDate'],
-                $r['eventPrice'],
-                $r['eventCapacity']
+        foreach ($rows as $row) {
+            $e = new Event(
+                $row['eventName'],
+                $row['eventLocation'],
+                $row['eventDate'],
+                $row['eventPrice'],
+                $row['eventCapacity']
             );
-            $e->setEventID($r['id']);
+            $e->setEventID($row['id']);
             $events[] = $e;
         }
         return $events;
@@ -102,15 +115,15 @@ class Event
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $eventId, PDO::PARAM_INT);
         $stmt->execute();
-        $r = $stmt->fetch(PDO::FETCH_ASSOC);
-        $e = new self(
-            $r['eventName'],
-            $r['eventLocation'],
-            $r['eventDate'],
-            $r['eventPrice'],
-            $r['eventCapacity']
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $e = new Event(
+            $row['eventName'],
+            $row['eventLocation'],
+            $row['eventDate'],
+            $row['eventPrice'],
+            $row['eventCapacity']
         );
-        $e->setEventID($r['id']);
+        $e->setEventID($row['id']);
         return $e;
     }
 
@@ -155,17 +168,17 @@ class Event
         $stmt = $db->prepare($sql);
         $stmt->bindParam(':id', $this->eventID, PDO::PARAM_INT);
         $stmt->execute();
-        $r = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        $sold = (int)$r['sold'];
+        $sold = (int)$row['sold'];
 
-        $remaining = $this->eventCapacity - $sold;
+        $capacity = $this->eventCapacity - $sold;
 
-        if ($remaining < 0) {
+        if ($capacity < 0) {
             return 0;
         }
         else {
-            return $remaining;
+            return $capacity;
         }
     }
 }

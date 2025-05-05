@@ -68,9 +68,9 @@ $events = Event::searchEvents($search, $location);
                 <a href="../public/event.php?id=<?php echo $event->getEventId(); ?>" class="btn">View Details</a>
             <?php } ?>
             <?php if (!empty($event->getEventCapacity())){ ?>
-                <?php $remaining = $event->getRemainingCapacity(); ?>
-                <?php if ($remaining > 0){ ?>
-                    <p>Capacity: <?php echo $remaining; ?>/<?php echo $event->getEventCapacity(); ?></p>
+                <?php $capacity = $event->getRemainingCapacity(); ?>
+                <?php if ($capacity > 0){ ?>
+                    <p>Capacity: <?php echo $capacity; ?>/<?php echo $event->getEventCapacity(); ?></p>
                 <?php } ?>
             <?php } ?>
         </div>

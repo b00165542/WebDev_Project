@@ -13,12 +13,12 @@ $email = '';
 $error_message = '';
 $success_message = '';
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+if (!empty($_POST)){
     $user = User::findByEmail($_POST['email']);
     if ($user && $user->getUserPassword() === $_POST['password']){
         Session::login($user);
-        $success_message = "Login successful! Redirecting...";
-        echo '<script>setTimeout(function(){ window.location.href = "index.php"; }, 2500);</script>';
+        header("Location: index.php");
+        exit();
     } else{
         $error_message = "Invalid email or password.";
     }
@@ -29,9 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST'){
     <div class="card">
         <form id="login-form" action="../public/login.php" method="POST">
             <h2 class="card-title">Login to Your Account</h2>
-            <?php if (!empty($success_message)){ ?>
-                <div class="alert alert-success" id="msg"><?php echo $success_message; ?></div>
-            <?php } elseif (!empty($error_message)){ ?>
+            <?php if (!empty($error_message)){ ?>
                 <div class="alert alert-danger" id="msg"><?php echo $error_message; ?></div>
             <?php } ?>
             <div class="form-group">

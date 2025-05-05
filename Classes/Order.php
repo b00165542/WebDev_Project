@@ -17,13 +17,23 @@ class Order{
     public static function place(PDO $conn, $userId, array $eventDetails){
         $orderDate = date('Y-m-d');
         $total = $eventDetails['eventPrice'];
-        $stmt = $conn->prepare("INSERT INTO orders (userID, eventID, totalAmount, orderDate, quantity) VALUES (:userID, :eventID, :totalAmount, :orderDate, 1)");
-        $stmt->execute([
-            ':userID' => $userId,
-            ':eventID' => $eventDetails['id'],
-            ':totalAmount' => $total,
-            ':orderDate' => $orderDate
-        ]);
+        $new_order = [
+            'userID' => $userId,
+            'eventID' => $eventDetails['id'],
+            'totalAmount' => $total,
+            'orderDate' => $orderDate,
+            'quantity' => 1
+        ];
+        $sql = sprintf(
+            "INSERT INTO orders (%s) VALUES (%s)",
+            implode(", ", array_keys($new_order)),
+            ":" . implode(", :", array_keys($new_order))
+        );
+        $stmt = $conn->prepare($sql);
+        foreach ($new_order as $key => $value) {
+            $stmt->bindValue(":" . $key, $value);
+        }
+        $stmt->execute();
         return $conn->lastInsertId();
     }
 }
