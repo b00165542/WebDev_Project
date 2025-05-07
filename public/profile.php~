@@ -54,7 +54,12 @@ if (!empty($_POST) && isset($_POST['refund_order_id']) && isset($_POST['refund_r
 </ul>
 
 <?php
-$section = isset($_GET['section']) ? $_GET['section'] : 'profile';
+if (isset($_GET['section'])) {
+    $section = $_GET['section'];
+}
+else {
+    $section = 'profile';
+}
 if ($section == 'profile'){
     echo '<h2>Personal Info</h2>';
     echo 'User ID: ' . $user_info['userID'] . '<br>';

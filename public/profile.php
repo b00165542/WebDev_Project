@@ -75,9 +75,14 @@ elseif ($section == 'orders') {
             echo '<tr>';
             echo '<td>' . $order['orderDate'] . '</td>';
             echo '<td>$' . $order['totalAmount'] . '</td>';
-            echo '<td>' . ($order['status'] == 'refunded' ? 'Refunded' : 'Active') . '</td>';
+            if ($order['status'] == 'refunded'){
+                echo '<td>Refunded</td>';
+            }
+            else {
+                echo '<td>Active</td>';
+            }
             echo '<td>';
-            if ($order['status'] != 'refunded') {
+            if ($order['status'] != 'refunded'){
                 echo '<form method="POST" action="profile.php?section=orders">';
                 echo '<input type="hidden" name="refund_order_id" value="' . $order['orderID'] . '">';
                 echo '<input type="hidden" name="refund_request" value="1">';
