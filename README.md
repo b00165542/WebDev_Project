@@ -22,8 +22,8 @@ Sergio Garcia - Order.php, Refund.php
 
 ## Pages
 
-Robert Melciu - login.php, logout.php, register.php, thank-you.php
+Robert Melciu - login.php, logout.php, register.php, product.php
 
 Shae Mohamed - admin_events.php, event.php, index.php, checkout.php
 
-Sergio Garcia - product.php, profile.php, header.php, footer.php
+Sergio Garcia - thank-you.php, profile.php, header.php, footer.php
